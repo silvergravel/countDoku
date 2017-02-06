@@ -56,16 +56,15 @@ void mousePressed() {
 }
 
 void keyPressed() {
-  
-  
+
+
 
 
   if (keyCode == 10) { //if 'return' is pressed
 
-   
-   //basicAnalysisRnd1();
-   basicAnalysisRnd2();
-    
+
+    //basicAnalysisRnd1();
+    basicAnalysisRnd2();
   } else if (keyCode == 16 ) { // 'SHIFT' arrow
 
     //******RULE 4.1: CHECK FOR UNIQUE CHARACTER IN THE SAME ROW***********
@@ -73,18 +72,14 @@ void keyPressed() {
     rule4_1();
 
     //***************************************************************
-    
-    
-    
-  } else if(keyCode == 47){
-    
+  } else if (keyCode == 47) {
+
     //******RULE 4.2: CHECK FOR UNIQUE CHARACTER IN THE SAME COLUMN***********
 
     rule4_2();
 
     //***************************************************************
-    
-  } else if (keyCode == 38){ // 'UP' arrow
+  } else if (keyCode == 38) { // 'UP' arrow
 
     int finalizedBoxCount = 0;
 
@@ -96,7 +91,6 @@ void keyPressed() {
       } else {
         b.num = "";
       }
-      
     }
     println(finalizedBoxCount + " are finalized Boxes");
   } else {
@@ -107,16 +101,13 @@ void keyPressed() {
     for (Box b : boxes) {
 
       if (b.isActive == true) {
-        b.update(s); //!!!!!maybe i can get rid of this update function and directly just update b.num as in : b.num = s;
-
-        if (s.equals(" ") == false) { //as long as user does not fill box with "space",
-          b.isAvailable = false;      //make its availability 'false' i.e the box is no
-        } else {          //longer vacant
-          s = "";
-          b.isAvailable = true;
+        if (int(s) > 0 && int(s) <= 9 ) { //only if user types in a number between 1 to 9, 
+          b.num = s;                      // then input it into the box
+          b.isAvailable = false;          // change the availability of the box to 'UNAVAILABLE'
+        } else {                          //if user presses any other key, 'DELETE' for example, or anything else by mistake...
+          b.num = "";                     //then dont input any character / remove any existing character in the box
+          b.isAvailable = true;           // change the availablity of the box to 'AVAILABLE' again.
         }
-
-        println("the box availabilty is " + b.isAvailable);
       }
     }
   }
@@ -279,15 +270,15 @@ void basicAnalysisRnd1() {
       } //ending the 'j' for loop
     } //ending the 'bo' for loop
   } //ending the 'bl' for loop
-  
+
   for (int i = 0; i < boxes.size(); i++) {
-      Box b = boxes.get(i);
-      if (b.num.length() == 1) {
-        b.isAvailable = false;
-      } else {
-        b.num = "";
-      }
+    Box b = boxes.get(i);
+    if (b.num.length() == 1) {
+      b.isAvailable = false;
+    } else {
+      b.num = "";
     }
+  }
 }
 
 void basicAnalysisRnd2() {
@@ -353,6 +344,4 @@ void basicAnalysisRnd2() {
       } //ending the 'j' for loop
     } //ending the 'bo' for loop
   } //ending the 'bl' for loop
-  
-  
 }
