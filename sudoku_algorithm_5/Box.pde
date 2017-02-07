@@ -6,7 +6,7 @@ class Box {
   String num;
   color c;
   color aC;
-  int offset;
+  int textOffset;
   boolean isActive;
   boolean isAvailable;
 
@@ -18,7 +18,7 @@ class Box {
     num = "";
     c = color(255,0);
     aC = color(255, 0, 0, 128);
-    offset = 30;
+    textOffset = 30;
     isActive = false;
     isAvailable = true;
   }
@@ -29,19 +29,14 @@ class Box {
     rect(posX, posY, s, s);
     noStroke();
     fill(255);
-    text(num, posX+offset, posY+offset);
+    text(num, posX+textOffset, posY+textOffset);
   }
 
-  void update(String num_) {
-
-    num = num_;
-  }
-
-  void active() {
+  void activeState() {
     c = aC;
   }
   
-  void inActive() {
+  void notActiveState() {
     c = color(255,0);
   }
 }

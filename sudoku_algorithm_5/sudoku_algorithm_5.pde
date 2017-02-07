@@ -1,17 +1,38 @@
-ArrayList<Box> boxes = new ArrayList<Box>();
-String[] posNums;
-int boxPosX = 60;
+ArrayList<Box> boxes = new ArrayList<Box>(); 
+
+// X and Y distance of each box from the previous (edge to edge, since side of box == 60 as well). 
+int boxPosX = 60;  
 int boxPosY = 60;
-int blockPosX = (boxPosX * 3)+5;
+
+// X and Y distance of each block from the previous
+int blockPosX = (boxPosX * 3)+5;  
 int blockPosY = (boxPosY * 3)+5;
-int gap = 25;
-String[] posNumbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
-int blockChecker = 0;
+
+
+
+
 
 void setup() {
+
   size(800, 800);
 
   //CREATE THE SUDOKU GRID
+  ////////////////////////////////////////////////////////////////////////////
+  /*the boxes are generated in the following order: (for the sake of convenience later on)
+   
+   | 0  | 1  | 2  |    | 9  | 10 | 11 |    | 18 | 19 | 20 |      
+   | 3  | 4  | 5  |    | 12 | 13 | 14 |    | 21 | 22 | 23 |      
+   | 6  | 7  | 8  |    | 15 | 16 | 17 |    | 24 | 25 | 26 |      
+   
+   | 27 | 28 | 29 |    | 36 | 37 | 38 |    | 45 | 46 | 47 |      
+   | 30 | 31 | 32 |    | 39 | 40 | 41 |    | 48 | 49 | 50 |      
+   | 33 | 34 | 35 |    | 42 | 43 | 44 |    | 51 | 52 | 53 |      
+   
+   | 54 | 55 | 56 |    | 63 | 64 | 65 |    | 72 | 73 | 74 |      
+   | 57 | 58 | 59 |    | 66 | 67 | 68 |    | 75 | 76 | 77 |      
+   | 60 | 61 | 62 |    | 69 | 70 | 71 |    | 78 | 79 | 80 |  
+   
+   */  ///////////////////////////////////////////////////////////////////////////
 
   for (int l = 0; l < 3; l++) {
     for (int k = 0; k < 3; k++) {
@@ -22,38 +43,20 @@ void setup() {
       }
     }
   }
+} // VOID SETUP ENDS HERE
 
-  posNums = new String[boxes.size()];
-  for (int i = 0; i < posNums.length; i++) {
-    posNums[i] = " ";
-  }
-}
+
 
 void draw() {
+
   background(0);
 
+  // display the boxes generated earlier
   for (Box b : boxes) {
     b.display();
   }
-}
+}// VOID DRAW ENDS HERE
 
-void mousePressed() {
-
-  for (Box b : boxes) { //***DEACTIVATE ALL BOXES***
-    b.inActive();
-    b.isActive = false;
-  }
-
-  for (Box b : boxes) {  //***ACTIVATE BOX THAT IS CLICKED***
-    float d = dist(mouseX, mouseY, b.posX, b.posY );
-
-    if (mouseX > b.posX && mouseY > b.posY && d < b.s) {
-      b.active(); //object function that changes the color of box to red
-      b.isActive = true; //turn boolean on, so that we can modify the string inside
-      println("THE BOX ID IS " + boxes.indexOf(b)); //get the 'id' (so to say) of the box
-    }
-  }
-}
 
 void keyPressed() {
 
@@ -62,34 +65,38 @@ void keyPressed() {
 
   if (keyCode == 10) { //if 'return' is pressed
 
+    //******RULE 1,2,3: THREE BASIC SUDOKU RULES***********
 
-    //basicAnalysisRnd1();
-    basicAnalysisRnd2();
+    basicAnalysis();
+
+    //***************************************************************
   } else if (keyCode == 16 ) { // 'SHIFT' arrow
 
-    //******RULE 4.1: CHECK FOR UNIQUE CHARACTER IN THE SAME ROW***********
+    //******RULE 4.1: CHECK FOR UNIQUE DIGIT IN THE SAME ROW***********
 
-    rule4_1();
-
-    //***************************************************************
-  } else if (keyCode == 47) {
-
-    //******RULE 4.2: CHECK FOR UNIQUE CHARACTER IN THE SAME COLUMN***********
-
-    rule4_2();
+    uniqueDigitCheck_row();
 
     //***************************************************************
+  } else if (keyCode == 47) { // '?' key
+
+    //******RULE 4.2: CHECK FOR UNIQUE DIGIT IN THE SAME COLUMN***********
+
+    uniqueDigitCheck_col();
+
+    //***************************************************************
+
+    //maybe its a good idea to have a rule number 4.3 as well CHECK UNIQUE DIGIT IN SAME BLOCK ??////////////
   } else if (keyCode == 38) { // 'UP' arrow
 
-    int finalizedBoxCount = 0;
+    int finalizedBoxCount = 0; //counter to keep track of boxes with the final 'solution digit'
 
     for (int i = 0; i < boxes.size(); i++) {
       Box b = boxes.get(i);
-      if (b.num.length() == 1) {
-        finalizedBoxCount++;
-        b.isAvailable = false;
+      if (b.num.length() == 1) { //if the digit in the box is a single number then obviously it is the final 'solution digit' hence...
+        finalizedBoxCount++;     
+        b.isAvailable = false;   //that box is no longer available, for any future inputs.
       } else {
-        b.num = "";
+        b.num = "";              //if box DOES NOT have finalized 'solution digit', then wipe it clean, for a fresh start to the rule based analysis.
       }
     }
     println(finalizedBoxCount + " are finalized Boxes");
@@ -111,237 +118,24 @@ void keyPressed() {
       }
     }
   }
-}
-
-void rule4_1() {
-  String uniqueChar = "";
-  String blackList = "";
-
-  for (int l = 0; l < 81; l += 27) {
-    for (int k = 0; k < 9; k += 3) {
-      for (int j = 0; j < 27; j += 9) {
-        for (int m = 0; m < 3; m++) {
-          Box b = boxes.get(l +k + j + m);
-          if (b.num.length() > 1) { //only consider blocks that have more than 1 number
-            for (int i = 0; i < b.num.length(); i++ ) {
-              if (blackList.indexOf(b.num.charAt(i)) == -1) { //this will store the chars that are repeated, and hence blackList for our purpose
-                if (uniqueChar.indexOf(b.num.charAt(i)) == -1) { //if uniqueChar doesnt already have the char that is being analyed in our main string...
-                  uniqueChar += b.num.charAt(i); //then this takes in the first occurence of each new(unique) character
-                } else if (uniqueChar.indexOf(b.num.charAt(i)) >= 0) { //if uniqueChar already consists this char, meaning its occured before in our main string..
-                  uniqueChar = uniqueChar.replace(str(b.num.charAt(i)), ""); //then remove that char from our uniqueChar string
-                  blackList += b.num.charAt(i); //also add it to our 'blacklisted' blackList chars, so that it is never added again to our uniqueChar
-                }
-              }
-            }
-          }
-        }
-      }
-      // get the output here. and refresh the variables so that the process
-      //starts for the next line
-      println("UNIQUE IS " + uniqueChar);
-
-      for (int j = 0; j < 27; j += 9) {
-        for (int m = 0; m < 3; m++) {
-          Box b = boxes.get(l +k + j + m);
-          for (int n = 0; n < uniqueChar.length(); n++) {
-            if (b.num.indexOf(uniqueChar.charAt(n)) >= 0 && uniqueChar.equals("") == false) {
-              /* uniqueChar.equals("") == false is required to make sure that
-               in the case where there is no unique character (meaning the result is ""), 
-               the program doesn't replace all the existing characters with "" (empty) */
-              b.num = str(uniqueChar.charAt(n));
-              b.isAvailable = false;
-            }
-          }
-        }
-      }
-      uniqueChar = "";
-      blackList = "";
-    }
-  }
-}
-
-void rule4_2() {
-  String uniqueChar = "";
-  String blackList = "";
-
-  for (int l = 0; l < 27; l += 9) {
-    for (int k = 0; k < 3; k ++) {
-      for (int j = 0; j < 81; j += 27) {
-        for (int m = 0; m < 9; m += 3) {
-          Box b = boxes.get(l +k + j + m);
-          if (b.num.length() > 1) { //only consider blocks that have more than 1 number
-            for (int i = 0; i < b.num.length(); i++ ) {
-              if (blackList.indexOf(b.num.charAt(i)) == -1) { //this will store the chars that are repeated, and hence blackList for our purpose
-                if (uniqueChar.indexOf(b.num.charAt(i)) == -1) { //if uniqueChar doesnt already have the char that is being analyed in our main string...
-                  uniqueChar += b.num.charAt(i); //then this takes in the first occurence of each new(unique) character
-                } else if (uniqueChar.indexOf(b.num.charAt(i)) >= 0) { //if uniqueChar already consists this char, meaning its occured before in our main string..
-                  uniqueChar = uniqueChar.replace(str(b.num.charAt(i)), ""); //then remove that char from our uniqueChar string
-                  blackList += b.num.charAt(i); //also add it to our 'blacklisted' blackList chars, so that it is never added again to our uniqueChar
-                }
-              }
-            }
-          }
-        }
-      }
-      // get the output here. and refresh the variables so that the process
-      //starts for the next line
-      println("UNIQUE IS " + uniqueChar);
-
-      for (int j = 0; j < 81; j += 27) {
-        for (int m = 0; m < 9; m += 3) {
-          Box b = boxes.get(l +k + j + m);
-          for (int n = 0; n < uniqueChar.length(); n++) {
-            if (b.num.indexOf(uniqueChar.charAt(n)) >= 0 && uniqueChar.equals("") == false) {
-              /* uniqueChar.equals("") == false is required to make sure that
-               in the case where there is no unique character (meaning the result is ""), 
-               the program doesn't replace all the existing characters with "" (empty) */
-              b.num = str(uniqueChar.charAt(n));
-              b.isAvailable = false;
-            }
-          }
-        }
-      }
-      uniqueChar = "";
-      blackList = "";
-    }
-  }
-}
-
-void basicAnalysisRnd1() {
-  for (int bl = 0; bl < 9; bl++) { //this is to shift to the next block
-    for (int bo = 0; bo < 9; bo++) { //this is to shift to next square within each block
-      for (int j = 0; j < posNumbers.length; j++) { //cycle through the numbers 1 to 9 
+}// VOID KEYPRESSED ENDS HERE
 
 
+void mousePressed() {
 
-        //*******RULE 1: CHECK FOR SAME NUMBER WITHIN THE BLOCK*********
+  //ACTIVATE BOX THAT IS CLICKED
+  ////////////////////////////////////////////////////////////////////////////
+  for (Box b : boxes) {  
+    float d = dist(mouseX, mouseY, b.posX, b.posY );
 
-        for ( int i = 0 + (bl*9); i< 9 + (bl*9); i++) { //for each number, check every box in the block and see if the same number is already present
-          Box b = boxes.get(i);
-          if (int(posNumbers[j]) != int(b.num)) { //if the number is not already present then 
-            blockChecker++;                       //add 1 to the blockChecker variable, which keeps a count of the number of boxes that DO NOT have the same number
-          }
-        }
-        //**************************************************************
+    if (mouseX > b.posX && mouseY > b.posY && d < b.s) {
+      b.activeState();                              //object function: change box color to RED
+      b.isActive = true;                            //object function: boolean ON, so we can modify the String inside
 
-
-
-        //******RULE 2: CHECK FOR SAME NUMBER IN THE SAME ROW***********
-
-        for (int n = 0; n < 3; n++) {
-          for (int m = 0; m < 3; m++ ) {
-            Box b = boxes.get((n%3)*9 + m + int(bl/3)*27 + int(bo/3)*3);
-            if (int(posNumbers[j]) != int(b.num)) {
-              blockChecker++;
-            }
-          }
-        }
-
-        //***************************************************************
-
-        //******RULE 3: CHECK FOR SAME NUMBER IN THE SAME COLUMN***********
-
-        for (int n = 0; n < 3; n++) {
-          for (int m = 0; m < 9; m += 3 ) {
-            Box b = boxes.get((n%3)*27 + m + (bl%3)*9 + (bo%3));
-            if (int(posNumbers[j]) != int(b.num)) {
-              blockChecker++;
-            }
-          }
-        }
-
-        //***************************************************************
-
-
-
-
-
-
-        if (blockChecker == 27) { //meaning that the currentNumber is not repeated in any other box WITHIN the block
-          println(posNumbers[j] + " is not in this block");
-          Box b = boxes.get(bo + (bl*9)); //get ID of the box that is being analyzed
-          if (b.isAvailable == true) {
-            b.num += posNumbers[j];
-          }
-        } else {
-          println(posNumbers[j] + " is in this block");
-        }
-        blockChecker = 0; //reset blockChecker variable so that it can start checking for the nextNumber in the posNumbers array.
-      } //ending the 'j' for loop
-    } //ending the 'bo' for loop
-  } //ending the 'bl' for loop
-
-  for (int i = 0; i < boxes.size(); i++) {
-    Box b = boxes.get(i);
-    if (b.num.length() == 1) {
-      b.isAvailable = false;
+      println("THE BOX ID IS " + boxes.indexOf(b)); //get the 'id' (so to say) of the box
     } else {
-      b.num = "";
+      b.notActiveState();                           //object function: change box color back to black
+      b.isActive = false;                           // boolean OFF
     }
   }
-}
-
-void basicAnalysisRnd2() {
-  for (int bl = 0; bl < 9; bl++) { //this is to shift to the next block
-    for (int bo = 0; bo < 9; bo++) { //this is to shift to next square within each block
-      for (int j = 0; j < posNumbers.length; j++) { //cycle through the numbers 1 to 9 
-
-
-
-        //*******RULE 1: CHECK FOR SAME NUMBER WITHIN THE BLOCK*********
-
-        for ( int i = 0 + (bl*9); i< 9 + (bl*9); i++) { //for each number, check every box in the block and see if the same number is already present
-          Box b = boxes.get(i);
-          if (int(posNumbers[j]) != int(b.num)) { //if the number is not already present then 
-            blockChecker++;                       //add 1 to the blockChecker variable, which keeps a count of the number of boxes that DO NOT have the same number
-          }
-        }
-        //**************************************************************
-
-
-
-        //******RULE 2: CHECK FOR SAME NUMBER IN THE SAME ROW***********
-
-        for (int n = 0; n < 3; n++) {
-          for (int m = 0; m < 3; m++ ) {
-            Box b = boxes.get((n%3)*9 + m + int(bl/3)*27 + int(bo/3)*3);
-            if (int(posNumbers[j]) != int(b.num)) {
-              blockChecker++;
-            }
-          }
-        }
-
-        //***************************************************************
-
-        //******RULE 3: CHECK FOR SAME NUMBER IN THE SAME COLUMN***********
-
-        for (int n = 0; n < 3; n++) {
-          for (int m = 0; m < 9; m += 3 ) {
-            Box b = boxes.get((n%3)*27 + m + (bl%3)*9 + (bo%3));
-            if (int(posNumbers[j]) != int(b.num)) {
-              blockChecker++;
-            }
-          }
-        }
-
-        //***************************************************************
-
-
-
-
-
-
-        if (blockChecker == 27) { //meaning that the currentNumber is not repeated in any other box WITHIN the block
-          //println(posNumbers[j] + " is not in this block");
-          Box b = boxes.get(bo + (bl*9)); //get ID of the box that is being analyzed
-          if (b.isAvailable == true) {
-            b.num += posNumbers[j];
-          }
-        } else {
-          //println(posNumbers[j] + " is in this block");
-        }
-        blockChecker = 0; //reset blockChecker variable so that it can start checking for the nextNumber in the posNumbers array.
-      } //ending the 'j' for loop
-    } //ending the 'bo' for loop
-  } //ending the 'bl' for loop
-}
+}// VOID MOUSEPRESSED ENDS HERE
