@@ -4,11 +4,14 @@ class Box {
   int posX;
   int posY;
   String num;
+  String numTemp;
+  String appendedNum;
   color c;
   color aC;
   int textOffset;
   boolean isActive;
   boolean isAvailable;
+  boolean appended;
 
   Box(int posX_, int posY_) {
 
@@ -16,11 +19,14 @@ class Box {
     posX = posX_;
     posY = posY_;
     num = "";
+    numTemp = "";
+    appendedNum = "";
     c = color(255,0);
     aC = color(255, 0, 0, 128);
     textOffset = 30;
     isActive = false;
     isAvailable = true;
+    appended = false;
   }
 
   void display() {

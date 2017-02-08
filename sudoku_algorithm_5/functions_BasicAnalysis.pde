@@ -59,10 +59,10 @@ void basicAnalysis() {
           Box b = boxes.get(bo + (bl*9)); //get ID (so to speak) of the box that is being analyzed
           if (b.isAvailable == true) {    //if this box isn't already filled up with a solution digit...
             b.num += possibleDigits[j];   //then write the current possibleDigit into the box.
-          }
+          } 
         }
         blockRowColChecker = 0; //reset blockRowColChecker variable so that it can start the same analysis for the next possibleDigit (j loop).
-      } //ending the 'j' for loop
+      } //ending the 'j' for loop 
     } //ending the 'bo' for loop
   } //ending the 'bl' for loop
 } //CLOSING THE basicAnalysis() FUNCTION

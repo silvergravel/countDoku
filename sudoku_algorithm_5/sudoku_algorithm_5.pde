@@ -91,7 +91,28 @@ void keyPressed() {
     uniqueDigitCheck(27, 9, 3, 1);  //   c_r_bShift2 = 27  c_r_bShift = 9   boxShift2 = 3  boxShift = 1    
 
     //***************************************************************
-  } else if (keyCode == 38) { // 'UP' arrow
+  }else if (keyCode == 44) { // ',' key
+
+    //******RULE 5***********block
+
+    numBoxMatch(27,9,3,1);      
+
+    //***************************************************************
+  }else if (keyCode == 77) { // 'm' key
+
+    //******RULE 5***********column
+
+    numBoxMatch(9,1,27,3);      
+
+    //***************************************************************
+  }else if (keyCode == 78) { // 'n' key
+
+    //******RULE 5***********row
+
+    numBoxMatch(27,3,9,1);      
+
+    //***************************************************************
+  }else if (keyCode == 38) { // 'UP' arrow
 
     int finalizedBoxCount = 0; //counter to keep track of boxes with the final 'solution digit'
 
