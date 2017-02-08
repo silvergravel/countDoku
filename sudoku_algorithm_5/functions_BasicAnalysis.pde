@@ -1,5 +1,5 @@
 
-//BASIC ANALYSIS
+//BASIC ANALYSIS | RULE 1,2,3
 ////////////////////////////////////////////////////////////////////////////
 //cycle through each of the boxes. Based on the provided numbers, and the 3 basic rules of sudoku (no repeatition in block, row or column), 
 //fill up each box with all the numbers that could be valid in it.

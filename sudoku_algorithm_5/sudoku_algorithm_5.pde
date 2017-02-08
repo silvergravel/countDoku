@@ -74,18 +74,23 @@ void keyPressed() {
 
     //******RULE 4.1: CHECK FOR UNIQUE DIGIT IN THE SAME ROW***********
 
-    uniqueDigitCheck_row();
+    uniqueDigitCheck(27, 3, 9, 1);  //   c_r_bShift2 = 27  c_r_bShift = 3   boxShift2 = 9  boxShift = 1
 
     //***************************************************************
-  } else if (keyCode == 47) { // '?' key
+  } else if (keyCode == 47) { // '/' key
 
     //******RULE 4.2: CHECK FOR UNIQUE DIGIT IN THE SAME COLUMN***********
 
-    uniqueDigitCheck_col();
+    uniqueDigitCheck(9, 1, 27, 3);  //   c_r_bShift2 = 9  c_r_bShift = 1   boxShift2 = 27  boxShift = 3    
 
     //***************************************************************
+  } else if (keyCode == 46) { // '.' key
 
-    //maybe its a good idea to have a rule number 4.3 as well CHECK UNIQUE DIGIT IN SAME BLOCK ??////////////
+    //******RULE 4.3: CHECK FOR UNIQUE DIGIT IN THE SAME BLOCK***********
+
+    uniqueDigitCheck(27, 9, 3, 1);  //   c_r_bShift2 = 27  c_r_bShift = 9   boxShift2 = 3  boxShift = 1    
+
+    //***************************************************************
   } else if (keyCode == 38) { // 'UP' arrow
 
     int finalizedBoxCount = 0; //counter to keep track of boxes with the final 'solution digit'
