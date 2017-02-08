@@ -19,7 +19,6 @@ class Box {
     posX = posX_;
     posY = posY_;
     num = "";
-    numTemp = "";
     appendedNum = "";
     c = color(255,0);
     aC = color(255, 0, 0, 128);

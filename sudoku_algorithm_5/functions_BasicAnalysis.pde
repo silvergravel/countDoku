@@ -57,12 +57,16 @@ void basicAnalysis() {
         if (blockRowColChecker == 27) { //meaning that the current possibleDigit is not repeated in any other box WITHIN the block OR row OR column
   
           Box b = boxes.get(bo + (bl*9)); //get ID (so to speak) of the box that is being analyzed
-          if (b.isAvailable == true) {    //if this box isn't already filled up with a solution digit...
+          if (b.isAvailable == true && b.appended == false) {    //if this box isn't already filled up with a solution digit...
             b.num += possibleDigits[j];   //then write the current possibleDigit into the box.
-          } 
+          } else if(b.appended == true){
+            if(b.appendedNum.indexOf(possibleDigits[j]) != -1){
+            b.num += possibleDigits[j];
+            }
+          }
         }
         blockRowColChecker = 0; //reset blockRowColChecker variable so that it can start the same analysis for the next possibleDigit (j loop).
-      } //ending the 'j' for loop 
+      } //ending the 'j' for loop
     } //ending the 'bo' for loop
   } //ending the 'bl' for loop
 } //CLOSING THE basicAnalysis() FUNCTION

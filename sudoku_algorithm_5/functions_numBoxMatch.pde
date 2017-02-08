@@ -24,7 +24,7 @@ void numBoxMatch(int c_r_bShift2, int c_r_bShift, int boxShift2, int boxShift ) 
                 if (digitMatchCounter == bCheck.num.length()) {
                   //println("All " + bCheck.num.length() + " numbers are present in the b.num" );
                   boxMatchCounter++;
-                  tempStr += l+k+j+m;
+                  tempStr += l+k+j+m + ",";
                   //fill up a temporary array with the 'l+k+j+m' of bCheck.num
                 } else {
                   //println("FAIL. Numbers dont match" );
@@ -51,7 +51,7 @@ void numBoxMatch(int c_r_bShift2, int c_r_bShift, int boxShift2, int boxShift ) 
                     }
                   }
                   bAppend.appended = true;
-                      
+                      bAppend.appendedNum = bAppend.num;
                 }
               }
             }
