@@ -38,7 +38,7 @@ void setup() {
     for (int k = 0; k < 3; k++) {
       for (int j = 0; j < 3; j++) {
         for (int i = 0; i < 3; i++) {
-          boxes.add(new Box( boxPosX+(boxPosX*i)+(blockPosX*k), boxPosY+(boxPosY*j)+(blockPosX*l) ));
+          boxes.add(new Box( 60+boxPosX+(boxPosX*i)+(blockPosX*k), 60+boxPosY+(boxPosY*j)+(blockPosX*l) ));
         }
       }
     }
@@ -49,7 +49,7 @@ void setup() {
 
 void draw() {
 
-  background(0);
+  background(35,35,35);
 
   // display the boxes generated earlier
   for (Box b : boxes) {

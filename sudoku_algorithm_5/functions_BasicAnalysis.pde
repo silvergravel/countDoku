@@ -57,11 +57,12 @@ void basicAnalysis() {
         if (blockRowColChecker == 27) { //meaning that the current possibleDigit is not repeated in any other box WITHIN the block OR row OR column
   
           Box b = boxes.get(bo + (bl*9)); //get ID (so to speak) of the box that is being analyzed
-          if (b.isAvailable == true && b.appended == false) {    //if this box isn't already filled up with a solution digit...
+          if (b.isAvailable == true && b.appended == false) {    //if this box isn't already filled up with a solution digit && it hasn't been appended (by rule 5)
             b.num += possibleDigits[j];   //then write the current possibleDigit into the box.
-          } else if(b.appended == true){
-            if(b.appendedNum.indexOf(possibleDigits[j]) != -1){
-            b.num += possibleDigits[j];
+          } else if(b.isAvailable == true && b.appended == true){ //else if it has been appended by rule 5...
+            if(b.appendedNum.indexOf(possibleDigits[j]) != -1){ // only if our 'possible digit' is also present in our appended number variable,
+            b.num += possibleDigits[j]; // then go ahead, and add this number to our box being analyzed.
+            //this way we make sure, that this BasicAnalysis doesnt overwrite our Rule 5.
             }
           }
         }

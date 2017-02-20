@@ -8,7 +8,8 @@ class Box {
   String appendedNum;
   color c;
   color aC;
-  int textOffset;
+  int textOffsetX;
+  int textOffsetY;
   boolean isActive;
   boolean isAvailable;
   boolean appended;
@@ -20,9 +21,10 @@ class Box {
     posY = posY_;
     num = "";
     appendedNum = "";
-    c = color(255,0);
-    aC = color(255, 0, 0, 128);
-    textOffset = 30;
+    c = color(255, 0);
+    aC = color(226, 35, 104, 128);
+    textOffsetX = 27;
+    textOffsetY = 34;
     isActive = false;
     isAvailable = true;
     appended = false;
@@ -34,14 +36,14 @@ class Box {
     rect(posX, posY, s, s);
     noStroke();
     fill(255);
-    text(num, posX+textOffset, posY+textOffset);
+    text(num, posX+textOffsetX, posY+textOffsetY);
   }
 
   void activeState() {
     c = aC;
   }
-  
+
   void notActiveState() {
-    c = color(255,0);
+    c = color(255, 0);
   }
 }
