@@ -78,7 +78,6 @@ void draw() {
       startAnalysis = false;
 
       startUniqueDigitCheckRow = true;
-      
     }
   }
 
@@ -91,12 +90,12 @@ void draw() {
       startAnalysis = true; //then run the start analysis loop again.
     } else {
       finalizeAndClear();
-    startUniqueDigitCheckCol = true;
+      startUniqueDigitCheckCol = true;
     }
     allUniqueDigits = "";
     startUniqueDigitCheckRow = false;
   }
-  
+
   if (startUniqueDigitCheckCol == true) {
     basicAnalysis();
     //******RULE 4.2: CHECK FOR UNIQUE DIGIT IN THE SAME COLUMN***********
@@ -105,13 +104,13 @@ void draw() {
       finalizeAndClear();
       startAnalysis = true; //then run the start analysis loop again.
     } else {
-       finalizeAndClear();
-    startUniqueDigitCheckBlock = true;
+      finalizeAndClear();
+      startUniqueDigitCheckBlock = true;
     }
     allUniqueDigits = "";
     startUniqueDigitCheckCol = false;
   }
-  
+
   if (startUniqueDigitCheckBlock == true) {
     basicAnalysis();
     //******RULE 4.3: CHECK FOR UNIQUE DIGIT IN THE SAME BLOCK***********
@@ -123,7 +122,6 @@ void draw() {
     allUniqueDigits = "";
     startUniqueDigitCheckBlock = false;
   }
-  
 }// VOID DRAW ENDS HERE
 
 
@@ -134,12 +132,7 @@ void keyPressed() {
 
   if (keyCode == 10) { //if 'return' is pressed
 
-
-
     startAnalysis = true;
-
-
-    //***************************************************************
   } else if (keyCode == 77  ) { //'M'
 
     basicAnalysis();
@@ -147,7 +140,6 @@ void keyPressed() {
 
     finalizeAndClear();
   } else {
-
 
     String s = str(key);
 
