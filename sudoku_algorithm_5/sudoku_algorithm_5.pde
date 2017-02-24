@@ -9,8 +9,13 @@ int blockPosX = (boxPosX * 3)+5;
 int blockPosY = (boxPosY * 3)+5;
 
 
+int finalizedBoxCount; //variable to keep track of the boxes that have been finalized. Need to automate the suDoku solving.
+int pFinalizedBoxCount = -1; //variable to keep track of previous finalized count.
 
-
+boolean startAnalysis = false;
+boolean startUniqueDigitCheckRow = false;
+boolean startUniqueDigitCheckCol = false;
+boolean startUniqueDigitCheckBlock = false;
 
 void setup() {
 
@@ -49,12 +54,76 @@ void setup() {
 
 void draw() {
 
-  background(35,35,35);
+  background(35, 35, 35);
 
   // display the boxes generated earlier
   for (Box b : boxes) {
     b.display();
   }
+
+  if (startAnalysis == true) {
+
+    while (finalizedBoxCount != pFinalizedBoxCount) {
+
+      basicAnalysis();
+      finalizeAndClear();
+    }
+
+    basicAnalysis();
+    numBoxMatch(27, 9, 3, 1); 
+    numBoxMatch(9, 1, 27, 3);
+    numBoxMatch(27, 3, 9, 1);
+    finalizeAndClear();
+    if (finalizedBoxCount == pFinalizedBoxCount) {
+      startAnalysis = false;
+
+      startUniqueDigitCheckRow = true;
+      
+    }
+  }
+
+  if (startUniqueDigitCheckRow == true) {
+    basicAnalysis();
+    //******RULE 4.1: CHECK FOR UNIQUE DIGIT IN THE SAME ROW***********
+    uniqueDigitCheck(27, 3, 9, 1);  //   c_r_bShift2 = 27  c_r_bShift = 3   boxShift2 = 9  boxShift = 1
+    if (allUniqueDigits.equals("") == false) { //if a unique digit was found...
+      finalizeAndClear();
+      startAnalysis = true; //then run the start analysis loop again.
+    } else {
+      finalizeAndClear();
+    startUniqueDigitCheckCol = true;
+    }
+    allUniqueDigits = "";
+    startUniqueDigitCheckRow = false;
+  }
+  
+  if (startUniqueDigitCheckCol == true) {
+    basicAnalysis();
+    //******RULE 4.2: CHECK FOR UNIQUE DIGIT IN THE SAME COLUMN***********
+    uniqueDigitCheck(9, 1, 27, 3);  
+    if (allUniqueDigits.equals("") == false) { //if a unique digit was found...
+      finalizeAndClear();
+      startAnalysis = true; //then run the start analysis loop again.
+    } else {
+       finalizeAndClear();
+    startUniqueDigitCheckBlock = true;
+    }
+    allUniqueDigits = "";
+    startUniqueDigitCheckCol = false;
+  }
+  
+  if (startUniqueDigitCheckBlock == true) {
+    basicAnalysis();
+    //******RULE 4.3: CHECK FOR UNIQUE DIGIT IN THE SAME BLOCK***********
+    uniqueDigitCheck(27, 9, 3, 1);  
+    if (allUniqueDigits.equals("") == false) { //if a unique digit was found...
+      finalizeAndClear();
+      startAnalysis = true; //then run the start analysis loop again.
+    } 
+    allUniqueDigits = "";
+    startUniqueDigitCheckBlock = false;
+  }
+  
 }// VOID DRAW ENDS HERE
 
 
@@ -65,67 +134,18 @@ void keyPressed() {
 
   if (keyCode == 10) { //if 'return' is pressed
 
-    //******RULE 1,2,3: THREE BASIC SUDOKU RULES***********
+
+
+    startAnalysis = true;
+
+
+    //***************************************************************
+  } else if (keyCode == 77  ) { //'M'
 
     basicAnalysis();
+  } else if (keyCode == 38) { // 'UP' arrow
 
-    //***************************************************************
-  } else if (keyCode == 16 ) { // 'SHIFT' arrow
-
-    //******RULE 4.1: CHECK FOR UNIQUE DIGIT IN THE SAME ROW***********
-
-    uniqueDigitCheck(27, 3, 9, 1);  //   c_r_bShift2 = 27  c_r_bShift = 3   boxShift2 = 9  boxShift = 1
-
-    //***************************************************************
-  } else if (keyCode == 47) { // '/' key
-
-    //******RULE 4.2: CHECK FOR UNIQUE DIGIT IN THE SAME COLUMN***********
-
-    uniqueDigitCheck(9, 1, 27, 3);  //   c_r_bShift2 = 9  c_r_bShift = 1   boxShift2 = 27  boxShift = 3    
-
-    //***************************************************************
-  } else if (keyCode == 46) { // '.' key
-
-    //******RULE 4.3: CHECK FOR UNIQUE DIGIT IN THE SAME BLOCK***********
-
-    uniqueDigitCheck(27, 9, 3, 1);  //   c_r_bShift2 = 27  c_r_bShift = 9   boxShift2 = 3  boxShift = 1    
-
-    //***************************************************************
-  }else if (keyCode == 44) { // ',' key
-
-    //******RULE 5***********block
-
-    numBoxMatch(27,9,3,1);      
-
-    //***************************************************************
-  }else if (keyCode == 77) { // 'm' key
-
-    //******RULE 5***********column
-
-    numBoxMatch(9,1,27,3);      
-
-    //***************************************************************
-  }else if (keyCode == 78) { // 'n' key
-
-    //******RULE 5***********row
-
-    numBoxMatch(27,3,9,1);      
-
-    //***************************************************************
-  }else if (keyCode == 38) { // 'UP' arrow
-
-    int finalizedBoxCount = 0; //counter to keep track of boxes with the final 'solution digit'
-
-    for (int i = 0; i < boxes.size(); i++) {
-      Box b = boxes.get(i);
-      if (b.num.length() == 1) { //if the digit in the box is a single number then obviously it is the final 'solution digit' hence...
-        finalizedBoxCount++;     
-        b.isAvailable = false;   //that box is no longer available, for any future inputs.
-      } else {
-        b.num = "";              //if box DOES NOT have finalized 'solution digit', then wipe it clean, for a fresh start to the rule based analysis.
-      }
-    }
-    println(finalizedBoxCount + " are finalized Boxes");
+    finalizeAndClear();
   } else {
 
 

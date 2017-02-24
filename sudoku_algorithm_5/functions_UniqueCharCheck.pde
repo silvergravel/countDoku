@@ -1,3 +1,4 @@
+String allUniqueDigits = ""; //needed for the automated analysis in void draw(){}
 String uniqueDigit = "";
 String blackList = "";
 
@@ -34,6 +35,7 @@ void uniqueDigitCheck(int c_r_bShift2, int c_r_bShift, int boxShift2, int boxShi
 
       // get the output here.
       println("UNIQUE IS " + uniqueDigit);
+      allUniqueDigits += uniqueDigit;
 
 
       // now that are unique char string is prepared (since we cycled through the entire row / column),
