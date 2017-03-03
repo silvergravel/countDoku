@@ -23,10 +23,20 @@ boolean finalizeAndClearGate = false;
 
 int baCounter = 0;
 
+PImage dooku;
+
+PFont font;
+PFont fontBold;
+String status = "Fill out the given numbers, then hit RETURN to start solving!";
+
+String controlKey1;
+String controlKey2;
+String controlKey3_1;
+String controlKey3_2;
 
 void setup() {
 
-  size(800, 800);
+  size(670, displayHeight, P3D);
 
   //CREATE THE SUDOKU GRID
   ////////////////////////////////////////////////////////////////////////////
@@ -50,11 +60,25 @@ void setup() {
     for (int k = 0; k < 3; k++) {
       for (int j = 0; j < 3; j++) {
         for (int i = 0; i < 3; i++) {
-          boxes.add(new Box( 60+boxPosX+(boxPosX*i)+(blockPosX*k), 60+boxPosY+(boxPosY*j)+(blockPosX*l) ));
+          boxes.add(new Box( 0+boxPosX+(boxPosX*i)+(blockPosX*k), 0+boxPosY+(boxPosY*j)+(blockPosX*l) ));
         }
       }
     }
   }
+
+  dooku = loadImage("dooku.png");
+
+  font = loadFont("Circular_Book.vlw");
+  fontBold = loadFont("Circular_Bold.vlw");
+
+  controlKey1 = "RETURN to initiate solving";
+
+  controlKey2 = "To input digit in box:" + "\n" + "- CLICK on box";
+  controlKey2 += "\n" + "- TYPE number between 0 - 9 ";
+  controlKey2 += "\n" + "that's about it.";
+
+  controlKey3_1 = "Finalized Digits in WHITE";
+  controlKey3_2 = "\n" + "Digit Possibilities in RED";
 } // VOID SETUP ENDS HERE
 
 
@@ -62,59 +86,80 @@ void setup() {
 void draw() {
 
   background(35, 35, 35);
+  
+  tint(255,8);
+  
+  image(dooku,60,60);
+  
 
   // display the boxes generated earlier
   for (Box b : boxes) {
     b.display();
   }
 
+  fill(255, 90);
+  textFont(font, 12);
+  textLeading(15);
+  text(controlKey1, 60, height-60);
+  text(controlKey2, 260, height-60);
+  text(controlKey3_1, 475, height-60);
+  fill(226, 35, 104, 180);
+  text(controlKey3_2, 475, height-60 + 1.5);
 
+
+  fill(226, 35, 104);
+  textFont(fontBold, 16);
+  textAlign(LEFT, CENTER);
+  textLeading(24);
+  text(status, 60, height - 180);
+  fill(255);
+  textAlign(LEFT, TOP);
+  text("COUNT DOKU",0,0);
 
   if (startAnalysis == true) {
-    
+
     finalizeAndClearGate = true;
-    for(int i = 0 ; i < boxes.size(); i ++){
-    Box b = boxes.get(i);
-    /*if even 1 box has no number, that means we did not have any 
-    human input previous to this (during which all the possible 
-    digits are displayed in each box), so no need to run the finalizeAndClear function*/
-    if(b.num.equals("") == true){ 
-    finalizeAndClearGate = false;
-    break;
+    for (int i = 0; i < boxes.size(); i ++) {
+      Box b = boxes.get(i);
+      /*if even 1 box has no number, that means we did not have any 
+       human input previous to this (during which all the possible 
+       digits are displayed in each box), so no need to run the finalizeAndClear function*/
+      if (b.num.equals("") == true) { 
+        finalizeAndClearGate = false;
+        break;
+      }
     }
+
+    if (finalizeAndClearGate == true) {
+      finalizeAndClear();
     }
-    
-    if(finalizeAndClearGate == true){
-    finalizeAndClear();
-    }
-    
-    
-    
-    
+
+
+
+
     while (finalizedBoxCount != pFinalizedBoxCount) {
       println("***** STARTING BASIC ANALYSIS " + baCounter++ + "...");
       basicAnalysis();
       finalizeAndClear();
     }
     baCounter = 0;
-    if(finalizedBoxCount != 81){
-    println("***** STARTING NUM BOX MATCH...");
-    basicAnalysis();
-    numBoxMatch(27, 9, 3, 1); 
-    numBoxMatch(9, 1, 27, 3);
-    numBoxMatch(27, 3, 9, 1);
-    finalizeAndClear();
-    if (finalizedBoxCount == pFinalizedBoxCount) {
-      startAnalysis = false;
+    if (finalizedBoxCount != 81) {
+      println("***** STARTING NUM BOX MATCH...");
+      basicAnalysis();
+      numBoxMatch(27, 9, 3, 1); 
+      numBoxMatch(9, 1, 27, 3);
+      numBoxMatch(27, 3, 9, 1);
+      finalizeAndClear();
+      if (finalizedBoxCount == pFinalizedBoxCount) {
+        startAnalysis = false;
 
-      startUniqueDigitCheckRow = true;
-      println("***** STARTING UNIQUE DIGIT CHECK --ROW--...");
-    }
+        startUniqueDigitCheckRow = true;
+        println("***** STARTING UNIQUE DIGIT CHECK --ROW--...");
+      }
     }//ending if condition to check if all 81 boxes have NOT been finalized
-    else{
+    else {
       startAnalysis = false;
       congrats();
-    
     }
   }
 
@@ -158,29 +203,30 @@ void draw() {
       finalizeAndClear();
       startAnalysis = true; //then run the start analysis loop again.
     } else { /*else, we have reached the last part of the analysis, 
-    and all boxes are still not filled. So its time to start preparing for 
-    human input*/
-      
-    
-    if(saveDigits == true){ 
-    /*..then it is def the first time we reaching this part of the programme
-    which means, we are stuck but we havn't made any human input or error at
-    this point...*/
-    println("***** ANALYSIS COMPLETE ***** & WE ARE STUCK !!! :( :( :(");
-    println("saving the current digits...");
-    saveDigits("savedDigits/savedDigits.txt");
-    saveDigits = false;
-    
-    } else /*this is the second time we reaching this point which is only possible
-    after some human input, which means there is a possibility of error, so check for that*/
-    {
-     checkForErrors(); 
-    }
-      
+     and all boxes are still not filled. So its time to start preparing for 
+     human input*/
+
+
+      if (saveDigits == true) { 
+        /*..then it is def the first time we reaching this part of the programme
+         which means, we are stuck but we havn't made any human input or error at
+         this point...*/
+        println("***** ANALYSIS COMPLETE ***** & WE ARE STUCK !!! :( :( :(");
+        println("saving the current digits...");
+        status = "ANALYSIS COMPLETE. Looks like we are stuck!" + "\n" ;
+        status += "Try finalizing one of the boxes using one of it's \'Digit Possibilities\'";
+        status += "\n" + "For best results, try a box with the fewest \'Digit Possibilities\'";
+        status += "\n" + "...then push that RETURN key and the solving will continue.";
+        saveDigits("savedDigits/savedDigits.txt");
+        saveDigits = false;
+      } else /*this is the second time we reaching this point which is only possible
+       after some human input, which means there is a possibility of error, so check for that*/
+      {
+        checkForErrors();
+      }
     } 
     allUniqueDigits = "";
     startUniqueDigitCheckBlock = false;
-    
   }
 }// VOID DRAW ENDS HERE
 
@@ -191,12 +237,11 @@ void keyPressed() {
 
 
   if (keyCode == 10) { //if 'return' is pressed
-
+    status = "ANALYSIS IN PROGRESS...";
     startAnalysis = true;
   } else if (keyCode == 77  ) { //'M'
 
     loadDigits("savedDigits/savedDigits.txt");
-    
   } else if (keyCode == 38) { // 'UP' arrow
 
     finalizeAndClear();
@@ -240,71 +285,74 @@ void mousePressed() {
 }// VOID MOUSEPRESSED ENDS HERE
 
 
-void checkForErrors(){
-  
-  int errorCounter = 0;
-  
-  for (int i = 0 ; i < boxes.size(); i++){
-  Box b = boxes.get(i);
-  if(b.num.equals("") == true){ //if even ANY one box doesnt have any 'possible digit' loaded into it...something is wrong
-  println("Something is wrong.... !!! :( :(");
-  loadDigits("savedDigits/savedDigits.txt");
-  println("NO WORRIES!, we loaded the digits from the last correct state!");
-  errorCounter++;
-  println("error counter: " + errorCounter);
-  break;
-  }
-  
-  
-  }
-  if(errorCounter == 0 ){
-  println("things seem okay as of now...but you are still STUCK :( :(");
-  }
+void checkForErrors() {
 
+  int errorCounter = 0;
+
+  for (int i = 0; i < boxes.size(); i++) {
+    Box b = boxes.get(i);
+    if (b.num.equals("") == true) { //if even ANY one box doesnt have any 'possible digit' loaded into it...something is wrong
+      println("Something is wrong.... !!! :( :(");
+      loadDigits("savedDigits/savedDigits.txt");
+      println("NO WORRIES!, we loaded the digits from the last correct state!");
+      status = "NOP! THAT DIGIT SEEMS TO BE INCORRECT." + "\n";
+      status += "Try finalizing the same box with one of the OTHER \'Digit Possibilities\'";
+      status += "\n" + "...then hit RETURN to continue solving" + "\n" + "Might just work ;)";
+      errorCounter++;
+      println("error counter: " + errorCounter);
+      break;
+    }
+  }
+  if (errorCounter == 0 ) {
+    println("things seem okay as of now...but you are still STUCK :( :(");
+    status = "Everything seems to be fine for now, but looks like you're still stuck!";
+    status += "\n" + "Once again, try finalizing a digit in one of the boxes";
+    status += "\n" + "And yet again, whack that RETURN key to continue solving :)";
+  }
 }
 
-void saveDigits(String fileName){
+void saveDigits(String fileName) {
 
   String out = "";
-  for(int i = 0 ; i < boxes.size(); i++){
-  out += boxes.get(i).num + "\n";
+  for (int i = 0; i < boxes.size(); i++) {
+    out += boxes.get(i).num + "\n";
   }
   saveStrings(fileName, out.trim().split("\n"));
   println("DIGITS HAVE BEEN SAVED!");
 }
 
-void loadDigits(String fileName){
+void loadDigits(String fileName) {
   String[] in = loadStrings(fileName);
-  
-  for(int i = 0 ; i < in.length; i++){
+
+  for (int i = 0; i < in.length; i++) {
     Box b = boxes.get(i);
     /*this is fucking important because the only reason why the program loads
-    digits is because, due to human input, it tried to solve the rest of the problem,
-    and it failed. In this process it filled up single digits into almost all the boxes,
-    and based on the commands in the BasicAnalysis function, it marked all these boxes as
-    'unavailable'. Hence, when these boxes are being loaded with digits from the 'past' 
-    again, their availability needs to be reset so as to allow the basicAnalysis to 
-    correctly do its job.*/
-    if(in[i].length() > 1){ 
-    b.isAvailable = true;
-    println(boxes.indexOf(b) + " is available again");
-    } else{
-    b.isAvailable = false;
+     digits is because, due to human input, it tried to solve the rest of the problem,
+     and it failed. In this process it filled up single digits into almost all the boxes,
+     and based on the commands in the BasicAnalysis function, it marked all these boxes as
+     'unavailable'. Hence, when these boxes are being loaded with digits from the 'past' 
+     again, their availability needs to be reset so as to allow the basicAnalysis to 
+     correctly do its job.*/
+    if (in[i].length() > 1) { 
+      b.isAvailable = true;
+      println(boxes.indexOf(b) + " is available again");
+    } else {
+      b.isAvailable = false;
     }
-   b.num = in[i];
-   b.appendedNum = "";
-   b.appended = false;
+    b.num = in[i];
+    b.appendedNum = "";
+    b.appended = false;
   }
 }
 
-void congrats(){
+void congrats() {
 
-  if(victory == true){
-  
+  if (victory == true) {
+
     println("--------------------------------------------------------");  
     println("***** CONGRATULATIONS!! THE PUZZLE HAS BEEN SOLVED *****");
     println("--------------------------------------------------------");
+    status = "CONGRATULATIONS!!" + "\n" + "YOU SOLVED IT YOU PRODIGY ;)";
     victory = false;
   }
-  
 }

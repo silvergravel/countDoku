@@ -14,6 +14,7 @@ class Box {
   boolean isAvailable;
   boolean appended;
 
+
   Box(int posX_, int posY_) {
 
     s = 60;
@@ -35,7 +36,14 @@ class Box {
     stroke(255);
     rect(posX, posY, s, s);
     noStroke();
-    fill(255);
+    if (num.length() > 1) {
+      fill(226, 35, 104);
+    } else {
+      fill(255);
+    }
+
+    textAlign(LEFT);
+    textFont(font, 16);
     text(num, posX+textOffsetX, posY+textOffsetY);
   }
 
