@@ -45,10 +45,10 @@ void numBoxMatch(int c_r_bShift2, int c_r_bShift, int boxShift2, int boxShift ) 
              we can eliminate those digits, from every other box!*/
 
             if (boxMatchCounter == b.num.length()) {  
-              print("we have " + boxMatchCounter  + " boxes that have only " );
-              println( boxMatchCounter  + " numbers in common " );
-              println("the numbers are " + b.num);
-              println("the box IDs are " + tempStr);
+              //print("we have " + boxMatchCounter  + " boxes that have only " );
+              //println( boxMatchCounter  + " numbers in common " );
+              //println("the numbers are " + b.num);
+              //println("the box IDs are " + tempStr);
 
               for (int j = 0; j < boxShift2*3; j += boxShift2) { //cycle through all boxes in current row/column/block again..
                 for (int m = 0; m < boxShift*3; m += boxShift) { //and append them, based on prev analysis
@@ -70,13 +70,13 @@ void numBoxMatch(int c_r_bShift2, int c_r_bShift, int boxShift2, int boxShift ) 
                 }
               }
             } else { //if our function core function logic does not hold true...
-              println("we dont have a NUM TO BOX MATCH. Sorry." + "the numbers we see are " + b.num   );
+              //println("we dont have a NUM TO BOX MATCH. Sorry." + "the numbers we see are " + b.num   );
             }
             boxMatchCounter = 0; //reset to 0, since we will now move on to the next box to be analyzed
             tempStr = ""; //same as above.
             //empty temp array
           } else { 
-            println("INVALID");
+            //println("INVALID");
           }
         } // we shift to the next Box that needs to be analyzed.. and we run this entire process again.
       }

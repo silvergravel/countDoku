@@ -11,7 +11,7 @@ void finalizeAndClear(){
         b.num = "";              //if box DOES NOT have finalized 'solution digit', then wipe it clean, for a fresh start to the rule based analysis.
       }
     }
-    println(finalizedBoxCount + " are finalized Boxes");
-    println(pFinalizedBoxCount + " was the previous");
+    print("Finalized Boxes= " + finalizedBoxCount + "  |  ");
+    println(" Previous Final Boxes= " + pFinalizedBoxCount);
   
 }

@@ -17,6 +17,13 @@ boolean startUniqueDigitCheckRow = false;
 boolean startUniqueDigitCheckCol = false;
 boolean startUniqueDigitCheckBlock = false;
 
+boolean saveDigits = true;
+boolean victory = true;
+boolean finalizeAndClearGate = false;
+
+int baCounter = 0;
+
+
 void setup() {
 
   size(800, 800);
@@ -61,14 +68,37 @@ void draw() {
     b.display();
   }
 
+
+
   if (startAnalysis == true) {
-
+    
+    finalizeAndClearGate = true;
+    for(int i = 0 ; i < boxes.size(); i ++){
+    Box b = boxes.get(i);
+    /*if even 1 box has no number, that means we did not have any 
+    human input previous to this (during which all the possible 
+    digits are displayed in each box), so no need to run the finalizeAndClear function*/
+    if(b.num.equals("") == true){ 
+    finalizeAndClearGate = false;
+    break;
+    }
+    }
+    
+    if(finalizeAndClearGate == true){
+    finalizeAndClear();
+    }
+    
+    
+    
+    
     while (finalizedBoxCount != pFinalizedBoxCount) {
-
+      println("***** STARTING BASIC ANALYSIS " + baCounter++ + "...");
       basicAnalysis();
       finalizeAndClear();
     }
-
+    baCounter = 0;
+    if(finalizedBoxCount != 81){
+    println("***** STARTING NUM BOX MATCH...");
     basicAnalysis();
     numBoxMatch(27, 9, 3, 1); 
     numBoxMatch(9, 1, 27, 3);
@@ -78,19 +108,28 @@ void draw() {
       startAnalysis = false;
 
       startUniqueDigitCheckRow = true;
+      println("***** STARTING UNIQUE DIGIT CHECK --ROW--...");
+    }
+    }//ending if condition to check if all 81 boxes have NOT been finalized
+    else{
+      startAnalysis = false;
+      congrats();
+    
     }
   }
+
+
 
   if (startUniqueDigitCheckRow == true) {
     basicAnalysis();
     //******RULE 4.1: CHECK FOR UNIQUE DIGIT IN THE SAME ROW***********
     uniqueDigitCheck(27, 3, 9, 1);  //   c_r_bShift2 = 27  c_r_bShift = 3   boxShift2 = 9  boxShift = 1
+    finalizeAndClear();
     if (allUniqueDigits.equals("") == false) { //if a unique digit was found...
-      finalizeAndClear();
       startAnalysis = true; //then run the start analysis loop again.
     } else {
-      finalizeAndClear();
       startUniqueDigitCheckCol = true;
+      println("***** STARTING UNIQUE DIGIT CHECK --COL--...");
     }
     allUniqueDigits = "";
     startUniqueDigitCheckRow = false;
@@ -100,12 +139,12 @@ void draw() {
     basicAnalysis();
     //******RULE 4.2: CHECK FOR UNIQUE DIGIT IN THE SAME COLUMN***********
     uniqueDigitCheck(9, 1, 27, 3);  
+    finalizeAndClear();
     if (allUniqueDigits.equals("") == false) { //if a unique digit was found...
-      finalizeAndClear();
       startAnalysis = true; //then run the start analysis loop again.
     } else {
-      finalizeAndClear();
       startUniqueDigitCheckBlock = true;
+      println("***** STARTING UNIQUE DIGIT CHECK --BLOCK--...");
     }
     allUniqueDigits = "";
     startUniqueDigitCheckCol = false;
@@ -118,9 +157,30 @@ void draw() {
     if (allUniqueDigits.equals("") == false) { //if a unique digit was found...
       finalizeAndClear();
       startAnalysis = true; //then run the start analysis loop again.
+    } else { /*else, we have reached the last part of the analysis, 
+    and all boxes are still not filled. So its time to start preparing for 
+    human input*/
+      
+    
+    if(saveDigits == true){ 
+    /*..then it is def the first time we reaching this part of the programme
+    which means, we are stuck but we havn't made any human input or error at
+    this point...*/
+    println("***** ANALYSIS COMPLETE ***** & WE ARE STUCK !!! :( :( :(");
+    println("saving the current digits...");
+    saveDigits("savedDigits/savedDigits.txt");
+    saveDigits = false;
+    
+    } else /*this is the second time we reaching this point which is only possible
+    after some human input, which means there is a possibility of error, so check for that*/
+    {
+     checkForErrors(); 
+    }
+      
     } 
     allUniqueDigits = "";
     startUniqueDigitCheckBlock = false;
+    
   }
 }// VOID DRAW ENDS HERE
 
@@ -135,7 +195,8 @@ void keyPressed() {
     startAnalysis = true;
   } else if (keyCode == 77  ) { //'M'
 
-    basicAnalysis();
+    loadDigits("savedDigits/savedDigits.txt");
+    
   } else if (keyCode == 38) { // 'UP' arrow
 
     finalizeAndClear();
@@ -177,3 +238,73 @@ void mousePressed() {
     }
   }
 }// VOID MOUSEPRESSED ENDS HERE
+
+
+void checkForErrors(){
+  
+  int errorCounter = 0;
+  
+  for (int i = 0 ; i < boxes.size(); i++){
+  Box b = boxes.get(i);
+  if(b.num.equals("") == true){ //if even ANY one box doesnt have any 'possible digit' loaded into it...something is wrong
+  println("Something is wrong.... !!! :( :(");
+  loadDigits("savedDigits/savedDigits.txt");
+  println("NO WORRIES!, we loaded the digits from the last correct state!");
+  errorCounter++;
+  println("error counter: " + errorCounter);
+  break;
+  }
+  
+  
+  }
+  if(errorCounter == 0 ){
+  println("things seem okay as of now...but you are still STUCK :( :(");
+  }
+
+}
+
+void saveDigits(String fileName){
+
+  String out = "";
+  for(int i = 0 ; i < boxes.size(); i++){
+  out += boxes.get(i).num + "\n";
+  }
+  saveStrings(fileName, out.trim().split("\n"));
+  println("DIGITS HAVE BEEN SAVED!");
+}
+
+void loadDigits(String fileName){
+  String[] in = loadStrings(fileName);
+  
+  for(int i = 0 ; i < in.length; i++){
+    Box b = boxes.get(i);
+    /*this is fucking important because the only reason why the program loads
+    digits is because, due to human input, it tried to solve the rest of the problem,
+    and it failed. In this process it filled up single digits into almost all the boxes,
+    and based on the commands in the BasicAnalysis function, it marked all these boxes as
+    'unavailable'. Hence, when these boxes are being loaded with digits from the 'past' 
+    again, their availability needs to be reset so as to allow the basicAnalysis to 
+    correctly do its job.*/
+    if(in[i].length() > 1){ 
+    b.isAvailable = true;
+    println(boxes.indexOf(b) + " is available again");
+    } else{
+    b.isAvailable = false;
+    }
+   b.num = in[i];
+   b.appendedNum = "";
+   b.appended = false;
+  }
+}
+
+void congrats(){
+
+  if(victory == true){
+  
+    println("--------------------------------------------------------");  
+    println("***** CONGRATULATIONS!! THE PUZZLE HAS BEEN SOLVED *****");
+    println("--------------------------------------------------------");
+    victory = false;
+  }
+  
+}
