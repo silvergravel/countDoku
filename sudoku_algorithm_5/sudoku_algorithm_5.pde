@@ -27,7 +27,8 @@ PImage dooku;
 
 PFont font;
 PFont fontBold;
-String status = "Fill out the given numbers, then hit RETURN to start solving!";
+String status;
+
 
 String controlKey1;
 String controlKey2;
@@ -71,6 +72,9 @@ void setup() {
   font = loadFont("Circular_Book.vlw");
   fontBold = loadFont("Circular_Bold.vlw");
 
+  status = "Fill out the provided numbers, then hit RETURN to subjugate Doku and";
+  status += "\n" + "get him to solve shit for you!";
+
   controlKey1 = "RETURN to initiate solving";
 
   controlKey2 = "To input digit in box:" + "\n" + "- CLICK on box";
@@ -86,11 +90,11 @@ void setup() {
 void draw() {
 
   background(35, 35, 35);
-  
-  tint(255,8);
-  
-  image(dooku,60,60);
-  
+
+  tint(255, 8);
+
+  image(dooku, 60, 60);
+
 
   // display the boxes generated earlier
   for (Box b : boxes) {
@@ -114,7 +118,7 @@ void draw() {
   text(status, 60, height - 180);
   fill(255);
   textAlign(LEFT, TOP);
-  text("COUNT DOKU",0,0);
+  text("COUNT DOKU", 0, 0);
 
   if (startAnalysis == true) {
 
@@ -213,10 +217,10 @@ void draw() {
          this point...*/
         println("***** ANALYSIS COMPLETE ***** & WE ARE STUCK !!! :( :( :(");
         println("saving the current digits...");
-        status = "ANALYSIS COMPLETE. Looks like we are stuck!" + "\n" ;
-        status += "Try finalizing one of the boxes using one of it's \'Digit Possibilities\'";
-        status += "\n" + "For best results, try a box with the fewest \'Digit Possibilities\'";
-        status += "\n" + "...then push that RETURN key and the solving will continue.";
+        status = "DOKU'S ANALYSIS IS DONE. AND HE'S STUCK. STUPID GUY." + "\n" ;
+        status += "He needs your help. Try finalizing any one box using one of its";
+        status += "\n" + "Digit Possibilities. Pro tip, try a box with the fewest Digit Possibilities.";
+        status += "\n" + "...then push that RETURN key and get Doku to do some solving.";
         saveDigits("savedDigits/savedDigits.txt");
         saveDigits = false;
       } else /*this is the second time we reaching this point which is only possible
@@ -295,19 +299,19 @@ void checkForErrors() {
       println("Something is wrong.... !!! :( :(");
       loadDigits("savedDigits/savedDigits.txt");
       println("NO WORRIES!, we loaded the digits from the last correct state!");
-      status = "NOP! THAT DIGIT SEEMS TO BE INCORRECT." + "\n";
-      status += "Try finalizing the same box with one of the OTHER \'Digit Possibilities\'";
-      status += "\n" + "...then hit RETURN to continue solving" + "\n" + "Might just work ;)";
+      status = "NOP!!! THAT DIGIT SEEMS TO BE INCORRECT." + "\n";
+      status += "Try finalizing the same box with one of its OTHER Digit Possibilities";
+      status += "\n" + "...then hit RETURN to get Doku back to work ;)";
       errorCounter++;
       println("error counter: " + errorCounter);
       break;
     }
   }
   if (errorCounter == 0 ) {
-    println("things seem okay as of now...but you are still STUCK :( :(");
-    status = "Everything seems to be fine for now, but looks like you're still stuck!";
-    status += "\n" + "Once again, try finalizing a digit in one of the boxes";
-    status += "\n" + "And yet again, whack that RETURN key to continue solving :)";
+    println("Everything seem okay as of now...but you are still STUCK :( :(");
+    status = "DOKU IS STUCK AGAIN. I APOLOGIZE FOR HIS INCOMPETENCE >:(";
+    status += "\n" + "Once again, try finalizing a digit in one of the boxes.";
+    status += "\n" + "And yet again, whack that RETURN key. Maybe Doku will finally deliver :/";
   }
 }
 
@@ -352,7 +356,8 @@ void congrats() {
     println("--------------------------------------------------------");  
     println("***** CONGRATULATIONS!! THE PUZZLE HAS BEEN SOLVED *****");
     println("--------------------------------------------------------");
-    status = "CONGRATULATIONS!!" + "\n" + "YOU SOLVED IT YOU PRODIGY ;)";
+    status = "ITS SOLVED! CONGRATS!!" + "\n" + "LOOK AT YOU, YOU JEDI ;)";
+     
     victory = false;
   }
 }
