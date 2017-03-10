@@ -79,7 +79,7 @@ void setup() {
 
   controlKey2 = "To input digit in box:" + "\n" + "- CLICK on box";
   controlKey2 += "\n" + "- TYPE number between 0 - 9 ";
-  controlKey2 += "\n" + "that's about it.";
+ 
 
   controlKey3_1 = "Finalized Digits in WHITE";
   controlKey3_2 = "\n" + "Digit Possibilities in RED";
@@ -104,18 +104,18 @@ void draw() {
   fill(255, 90);
   textFont(font, 12);
   textLeading(15);
-  text(controlKey1, 60, height-60);
-  text(controlKey2, 260, height-60);
-  text(controlKey3_1, 475, height-60);
+  text(controlKey1, 60, height-78);
+  text(controlKey2, 260, height-78);
+  text(controlKey3_1, 475, height-78);
   fill(226, 35, 104, 180);
-  text(controlKey3_2, 475, height-60 + 1.5);
+  text(controlKey3_2, 475, height-78 + 1.5);
 
 
   fill(226, 35, 104);
   textFont(fontBold, 16);
   textAlign(LEFT, CENTER);
   textLeading(24);
-  text(status, 60, height - 180);
+  text(status, 60, height - 190);
   fill(255);
   textAlign(LEFT, TOP);
   text("COUNT DOKU", 0, 0);
