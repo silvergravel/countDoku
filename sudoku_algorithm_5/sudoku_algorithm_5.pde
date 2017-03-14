@@ -35,6 +35,8 @@ String controlKey2;
 String controlKey3_1;
 String controlKey3_2;
 
+int selectedBox;
+
 void setup() {
 
   size(670, displayHeight, P3D);
@@ -279,7 +281,9 @@ void mousePressed() {
     if (mouseX > b.posX && mouseY > b.posY && d < b.s) {
       b.activeState();                              //object function: change box color to RED
       b.isActive = true;                            //object function: boolean ON, so we can modify the String inside
-
+      
+      selectedBox = boxes.indexOf(b);
+      
       println("THE BOX ID IS " + boxes.indexOf(b)); //get the 'id' (so to say) of the box
     } else {
       b.notActiveState();                           //object function: change box color back to black
