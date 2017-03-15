@@ -1,7 +1,7 @@
 # countDoku
 ### Sudoku Solving Algorithm in Processing
 
-
+![alt text](https://github.com/silvergravel/countDoku/blob/master/inAction.gif "project image")
 
 __It was an uneventful evening in Berlin, so of course, solving some sudoku felt like the most appropriate way to spend my time :/ But then I ended up slipping into an obsessive ( and not very smart ) mental space that led me to spend 2 f***ing hours trying to solve an apparently ‘evil’ sudoku puzzle. It really hurt. So I thought maybe I could try and write some code that solves these frustrating puzzles and in the process, help me get over my evening of failure.__
 
